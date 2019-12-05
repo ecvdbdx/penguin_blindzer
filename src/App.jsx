@@ -8,8 +8,11 @@ class App extends Component {
     super( props )
 
     this.state = {
-      data: ''
+      data: [],
+      song: {}
     }
+
+    this.randSong= this.randSong.bind(this)
   }
 
 
@@ -17,21 +20,32 @@ class App extends Component {
     fetch( 'https://cors-anywhere.herokuapp.com/https://api.deezer.com/playlist/908622995' )
       .then( ( response ) => response.json() )
       .then( ( response ) => {
-        const a = response.tracks.data[1].preview
+        const result = response.tracks.data
         this.setState( {
-          data: a
+          data: result
         } )
-        console.log( a )
+        console.log( result )
+        this.randSong(this.state.data)
+        console.log(this.state.song)
       } )
+
+      
   }
 
+  randSong(playlist) {
+    const song = playlist[Math.floor(Math.random() * playlist.length)]
+    this.setState({song: song})
+  }
 
   render() {
-    const { data } = this.state
+    const { song } = this.state
     return (
-      <audio ref="audio_tag" src={data} controls autoPlay/>
-          )
-        }
-      }
-      
+      <>
+            <h1>{song.title}</h1>
+            <audio ref="audio_tag" src={song.preview} controls autoPlay/>
+      </>
+    )
+  }
+}
+
       export default App
