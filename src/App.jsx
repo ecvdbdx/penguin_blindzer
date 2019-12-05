@@ -10,7 +10,8 @@ class App extends Component {
     this.state = {
       data: [],
       song: {},
-      answer: ''
+      answer: '',
+      time: 0
     }
 
     this.audio_tag = React.createRef()
@@ -40,7 +41,6 @@ class App extends Component {
   }
 
   getInputValue( e ) {
-    // console.log( Math.floor( this.audio_tag.current.currentTime ) )
     this.setState( { answer: e.target.value }, () => {
       if ( this.state.song.title.toLowerCase() === this.state.answer.toLowerCase() )
         this.randSong( this.state.data )
@@ -50,7 +50,10 @@ class App extends Component {
 
   getCurrentTime() {
     this.audio_tag.current.ontimeupdate = () => {
-      console.log( Math.floor( this.audio_tag.current.currentTime ) )
+      const currentTime = Math.floor( this.audio_tag.current.currentTime )
+      this.setState( { time: currentTime } )
+      if ( this.state.time === 30 )
+        this.randSong( this.state.data )
     }
   }
 
