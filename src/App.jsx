@@ -9,10 +9,15 @@ class App extends Component {
 
     this.state = {
       data: [],
-      song: {}
+      song: {},
+      answer: '',
+      time: 0
     }
 
-    this.randSong= this.randSong.bind(this)
+    this.audio_tag = React.createRef()
+
+    this.randSong = this.randSong.bind( this )
+    this.getInputValue = this.getInputValue.bind( this )
   }
 
 
@@ -24,28 +29,46 @@ class App extends Component {
         this.setState( {
           data: result
         } )
-        console.log( result )
-        this.randSong(this.state.data)
-        console.log(this.state.song)
+        this.randSong( this.state.data )
+        this.getCurrentTime()
       } )
-
-      
   }
 
-  randSong(playlist) {
-    const song = playlist[Math.floor(Math.random() * playlist.length)]
-    this.setState({song: song})
+  randSong( playlist ) {
+    this.setState( { answer: '' } )
+    const song = playlist[Math.floor( Math.random() * playlist.length )]
+    this.setState( { song: song } )
+  }
+
+  getInputValue( e ) {
+    this.setState( { answer: e.target.value }, () => {
+      if ( this.state.song.title.toLowerCase() === this.state.answer.toLowerCase() )
+        this.randSong( this.state.data )
+    } )
+
+  }
+
+  getCurrentTime() {
+    this.audio_tag.current.ontimeupdate = () => {
+      const currentTime = Math.floor( this.audio_tag.current.currentTime )
+      this.setState( { time: currentTime } )
+      if ( this.state.time === 30 )
+        this.randSong( this.state.data )
+    }
   }
 
   render() {
     const { song } = this.state
     return (
       <>
-            <h1>{song.title}</h1>
-            <audio ref="audio_tag" src={song.preview} controls autoPlay/>
+        <h1>{song.title}</h1>
+        <audio ref={this.audio_tag} src={song.preview} controls autoPlay />
+        <section>
+          <input type="text" value={this.state.answer} autoFocus onChange={( e ) => this.getInputValue( e )} />
+        </section>
       </>
     )
   }
 }
 
-      export default App
+export default App
