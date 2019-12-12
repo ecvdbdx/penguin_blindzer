@@ -13,9 +13,7 @@ class App extends Component {
       answer: '',
       time: 0
     }
-
-    this.audio_tag = React.createRef()
-
+    this.getCurrentTime = this.getCurrentTime.bind(this)
     this.randSong = this.randSong.bind( this )
     this.getInputValue = this.getInputValue.bind( this )
   }
@@ -42,7 +40,7 @@ class App extends Component {
   getInputValue( e ) {
     this.setState( { answer: e.target.value }, () => {
       if ( this.state.song.title.toLowerCase() === this.state.answer.toLowerCase() )
-        this.randSong( this.state.data )
+        this.randSong()
     } )
 
   }
@@ -50,9 +48,6 @@ class App extends Component {
   getCurrentTime(e) {
     const currentTime = Math.floor( e.currentTarget.currentTime)
       this.setState( { time: currentTime } )
-      if ( e.currentTarget.ended){
-        this.randSong( this.state.data )
-      }
   }
 
   render() {
@@ -60,7 +55,7 @@ class App extends Component {
     return (
       <>
         <h1>{song.title}</h1>
-        <audio onTimeUpdate={(e) => this.getCurrentTime(e)}src={song.preview} controls autoPlay />
+        <audio onEnded={this.randSong} onTimeUpdate={this.getCurrentTime}src={song.preview} controls autoPlay />
         <section>
           <input type="text" value={this.state.answer} autoFocus onChange={( e ) => this.getInputValue( e )} />
         </section>
