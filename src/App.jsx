@@ -1,5 +1,6 @@
 import './App.css'
 import React, { Component } from 'react'
+import stringSimilarity from 'string-similarity'
 
 class App extends Component {
 
@@ -47,9 +48,13 @@ class App extends Component {
   getInputValue( e ) {
     this.setState( { answer: e.target.value }, () => {
       const songTitle = this.state.song.title.toLowerCase().replace( /(\((.*?)\))/, '' ).trim()
-      if ( songTitle === this.state.answer.toLowerCase() ) {
+      const answer = this.state.answer.toLowerCase()
+      const match = stringSimilarity.compareTwoStrings( songTitle, answer )
+      if ( match >= .9 ) {
         this.state.history.push( songTitle )
         this.reward()
+        this.state.history.push( songTitle )
+        console.log( this.state.history )
         this.randSong()
       }
     } )
