@@ -12,7 +12,8 @@ class App extends Component {
       song: {},
       answer: '',
       time: 0,
-      score: 0
+      score: 0,
+      history: []
     }
 
     this.reward = this.reward.bind( this )
@@ -34,17 +35,20 @@ class App extends Component {
   }
 
   randSong() {
-    const playlist = this.state.data;
-    console.log( playlist )
-    this.setState( { answer: '' } )
+    const playlist = this.state.data
     const song = playlist[Math.floor( Math.random() * playlist.length )]
-    this.setState( { song: song } )
+    this.setState( {
+      answer: '',
+      song: song,
+      data: playlist.filter( el => el.id !== song.id )
+    } )
   }
 
   getInputValue( e ) {
     this.setState( { answer: e.target.value }, () => {
       const songTitle = this.state.song.title.toLowerCase().replace( /(\((.*?)\))/, '' ).trim()
       if ( songTitle === this.state.answer.toLowerCase() ) {
+        this.state.history.push( songTitle )
         this.reward()
         this.randSong()
       }
