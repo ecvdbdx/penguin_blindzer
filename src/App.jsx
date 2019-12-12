@@ -11,9 +11,13 @@ class App extends Component {
       data: [],
       song: {},
       answer: '',
-      time: 0
+      time: 0,
+      score: 0,
+      history: []
     }
-    this.getCurrentTime = this.getCurrentTime.bind(this)
+
+    this.reward = this.reward.bind( this )
+    this.getCurrentTime = this.getCurrentTime.bind( this )
     this.randSong = this.randSong.bind( this )
     this.getInputValue = this.getInputValue.bind( this )
   }
@@ -25,29 +29,40 @@ class App extends Component {
       .then( ( response ) => {
         const result = response.tracks.data
         this.setState( {
-          data: result.filter(el => el.readable)
-        }, this.randSong)
+          data: result.filter( el => el.readable )
+        }, this.randSong )
       } )
   }
 
   randSong() {
-    const playlist = this.state.data;
-    this.setState( { answer: '' } )
+    const playlist = this.state.data
     const song = playlist[Math.floor( Math.random() * playlist.length )]
-    this.setState( { song: song } )
+    this.setState( {
+      answer: '',
+      song: song,
+      data: playlist.filter( el => el.id !== song.id )
+    } )
   }
 
   getInputValue( e ) {
     this.setState( { answer: e.target.value }, () => {
-      if ( this.state.song.title.toLowerCase() === this.state.answer.toLowerCase() )
+      const songTitle = this.state.song.title.toLowerCase().replace( /(\((.*?)\))/, '' ).trim()
+      if ( songTitle === this.state.answer.toLowerCase() ) {
+        this.state.history.push( songTitle )
+        this.reward()
         this.randSong()
+      }
     } )
-
   }
 
-  getCurrentTime(e) {
-    const currentTime = Math.floor( e.currentTarget.currentTime)
-      this.setState( { time: currentTime } )
+  reward() {
+    this.setState( { score: this.state.score + 25 } )
+    console.log( this.state.score )
+  }
+
+  getCurrentTime( e ) {
+    const currentTime = Math.floor( e.currentTarget.currentTime )
+    this.setState( { time: currentTime } )
   }
 
   render() {
@@ -55,7 +70,7 @@ class App extends Component {
     return (
       <>
         <h1>{song.title}</h1>
-        <audio onEnded={this.randSong} onTimeUpdate={this.getCurrentTime}src={song.preview} controls autoPlay />
+        <audio onEnded={this.randSong} onTimeUpdate={this.getCurrentTime} src={song.preview} controls autoPlay />
         <section>
           <input type="text" value={this.state.answer} autoFocus onChange={( e ) => this.getInputValue( e )} />
         </section>
