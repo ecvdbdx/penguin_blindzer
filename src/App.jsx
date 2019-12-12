@@ -27,14 +27,13 @@ class App extends Component {
       .then( ( response ) => {
         const result = response.tracks.data
         this.setState( {
-          data: result
-        } )
-        this.randSong( this.state.data )
-        this.getCurrentTime()
+          data: result.filter(el => el.readable)
+        }, this.randSong)
       } )
   }
 
-  randSong( playlist ) {
+  randSong() {
+    const playlist = this.state.data;
     this.setState( { answer: '' } )
     const song = playlist[Math.floor( Math.random() * playlist.length )]
     this.setState( { song: song } )
