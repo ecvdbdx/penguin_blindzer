@@ -58,9 +58,6 @@ class App extends Component {
 
   render() {
     const { song } = this.state
-    if(song.preview === "" ) {
-      console.log(typeof song.preview, song.preview)
-    }
     return (
       <>
         <h1>{song.title}</h1>
