@@ -47,13 +47,12 @@ class App extends Component {
 
   }
 
-  getCurrentTime() {
-    this.audio_tag.current.ontimeupdate = () => {
-      const currentTime = Math.floor( this.audio_tag.current.currentTime )
+  getCurrentTime(e) {
+    const currentTime = Math.floor( e.currentTarget.currentTime)
       this.setState( { time: currentTime } )
-      if ( this.state.time === 30 )
+      if ( e.currentTarget.ended){
         this.randSong( this.state.data )
-    }
+      }
   }
 
   render() {
@@ -61,7 +60,7 @@ class App extends Component {
     return (
       <>
         <h1>{song.title}</h1>
-        <audio ref={this.audio_tag} src={song.preview} controls autoPlay />
+        <audio onTimeUpdate={(e) => this.getCurrentTime(e)}src={song.preview} controls autoPlay />
         <section>
           <input type="text" value={this.state.answer} autoFocus onChange={( e ) => this.getInputValue( e )} />
         </section>
