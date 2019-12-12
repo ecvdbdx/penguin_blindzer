@@ -50,10 +50,10 @@ class App extends Component {
       const songTitle = this.state.song.title.toLowerCase().replace( /(\((.*?)\))/, '' ).trim()
       const answer = this.state.answer.toLowerCase()
       const match = stringSimilarity.compareTwoStrings( songTitle, answer )
-      if ( match >= .9 ) {
+      console.log( match, songTitle, answer )
+      if ( match >= .7 && songTitle.length === answer.length ) {
         this.state.history.push( songTitle )
         this.reward()
-        this.state.history.push( songTitle )
         console.log( this.state.history )
         this.randSong()
       }
