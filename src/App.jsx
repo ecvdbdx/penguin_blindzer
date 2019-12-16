@@ -19,7 +19,6 @@ class App extends Component {
     }
 
     this.reward = this.reward.bind( this )
-    this.renderEndGame = this.renderEndGame.bind( this )
     this.getCurrentTime = this.getCurrentTime.bind( this )
     this.randSong = this.randSong.bind( this )
     this.getInputValue = this.getInputValue.bind( this )
@@ -73,14 +72,8 @@ class App extends Component {
     this.setState( { time: currentTime } )
   }
 
- renderEndGame() {
-   return (
-     <h1>End Game</h1>
-   )
- }
-
   render() {
-    const { song, endGame } = this.state
+    const { song } = this.state
     return (
       <>
         { song &&
