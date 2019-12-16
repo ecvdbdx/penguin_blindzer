@@ -49,15 +49,15 @@ class App extends Component {
   getInputValue( e ) {
     this.setState( { answer: e.target.value }, () => {
       const songTitle = this.state.song.title.toLowerCase().replace( /(\((.*?)\))/, '' ).trim()
+      const songArtist = this.state.song.artist.name.toLowerCase()
       const answer = this.state.answer.toLowerCase()
-      const match = stringSimilarity.compareTwoStrings( songTitle, answer )
-      if ( match >= .7 && songTitle.length === answer.length ) {
+      const matchTitle = stringSimilarity.compareTwoStrings( songTitle, answer )
+      const matchArtist = stringSimilarity.compareTwoStrings( songArtist, answer )
+      if ( (matchTitle >= .7 && songTitle.length === answer.length) || (matchArtist >= .7 && songArtist.length === answer.length)) {
         this.state.history.push( songTitle )
         this.reward()
         console.log( this.state.history )
-        if ( this.state.data === [] )
-          this.setState( { endGame: !this.state.endGame } )
-        else this.randSong()
+        this.randSong()
       }
     } )
   }
@@ -74,11 +74,14 @@ class App extends Component {
 
   render() {
     const { song } = this.state
+    if(song.artist !== undefined)
+      console.log(song.artist.name)
     return (
       <>
         { song &&
           <>
           <h1>{song.title}</h1>
+          <h3>{song.artist && song.artist.name}</h3>
           <audio onEnded={this.randSong} onTimeUpdate={this.getCurrentTime} src={song.preview} controls autoPlay />
           <section>
             <input type="text" value={this.state.answer} autoFocus onChange={( e ) => this.getInputValue( e )} />
