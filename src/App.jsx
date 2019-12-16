@@ -83,13 +83,18 @@ class App extends Component {
     const { song, endGame } = this.state
     return (
       <>
-        {endGame === false ? ( <>
+        { song &&
+          <>
           <h1>{song.title}</h1>
           <audio onEnded={this.randSong} onTimeUpdate={this.getCurrentTime} src={song.preview} controls autoPlay />
           <section>
             <input type="text" value={this.state.answer} autoFocus onChange={( e ) => this.getInputValue( e )} />
           </section>
-        </> ) : this.renderEndGame()}
+        </>
+        }
+        {!song &&
+          <h1>End Game</h1>
+        }
       </>
     )
   }
