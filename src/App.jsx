@@ -23,6 +23,7 @@ class App extends Component {
     this.randSong = this.randSong.bind( this )
     this.getInputValue = this.getInputValue.bind( this )
     this.renderContent = this.renderContent.bind( this )
+    this.cleanString = this.cleanString.bind( this )
   }
 
   componentDidMount() {
@@ -46,10 +47,14 @@ class App extends Component {
     } )
   }
 
+  cleanString( string ) {
+    return string.toLowerCase().replace( /(\((.*?)\))/, '' ).trim().normalize( "NFD" ).replace( /[\u0300-\u036f]/g, "" )
+  }
+
   getInputValue( e ) {
     this.setState( { answer: e.target.value }, () => {
-      const songTitle = this.state.song.title.toLowerCase().replace( /(\((.*?)\))/, '' ).trim()
-      const answer = this.state.answer.toLowerCase()
+      const songTitle = this.cleanString( this.state.song.title )
+      const answer = this.cleanString( this.state.answer )
       const match = stringSimilarity.compareTwoStrings( songTitle, answer )
       if ( match >= .7 && songTitle.length === answer.length ) {
         this.state.history.push( songTitle )
