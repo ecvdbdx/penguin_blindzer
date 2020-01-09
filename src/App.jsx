@@ -68,7 +68,8 @@ class App extends Component {
   }
 
   reward() {
-    this.setState( { score: this.state.score + 25 } )
+    const score = 25 + (30 - this.state.time)
+    this.setState( { score: this.state.score + score } )
     console.log( this.state.score )
   }
 
