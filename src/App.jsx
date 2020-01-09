@@ -56,7 +56,7 @@ class App extends Component {
         this.reward()
         console.log( this.state.history )
         if ( this.state.data === [] )
-          this.setState( { endGame: !this.state.endGame } )
+          this.setState( { endGame: false } )
         else this.randSong()
       }
     } )
