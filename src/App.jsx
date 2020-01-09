@@ -22,8 +22,8 @@ class App extends Component {
     this.getCurrentTime = this.getCurrentTime.bind( this )
     this.randSong = this.randSong.bind( this )
     this.getInputValue = this.getInputValue.bind( this )
+    this.renderContent = this.renderContent.bind( this )
   }
-
 
   componentDidMount() {
     fetch( 'https://cors-anywhere.herokuapp.com/https://api.deezer.com/playlist/908622995' )
@@ -73,21 +73,15 @@ class App extends Component {
   }
 
   renderContent( song ) {
-    return (
+    return song ?
       <>
-        {
-          song ?
-            <>
-              <h1>{song.title}</h1>
-              <audio onEnded={this.randSong} onTimeUpdate={this.getCurrentTime} src={song.preview} controls autoPlay />
-              <section>
-                <input type="text" value={this.state.answer} autoFocus onChange={( e ) => this.getInputValue( e )} />
-              </section>
-            </>
-            : <h1>End Game</h1>
-        }
+        <h1>{song.title}</h1>
+        <audio onEnded={this.randSong} onTimeUpdate={this.getCurrentTime} src={song.preview} controls autoPlay />
+        <section>
+          <input type="text" value={this.state.answer} autoFocus onChange={( e ) => this.getInputValue( e )} />
+        </section>
       </>
-    )
+      : <h1>End Game</h1>
   }
 
   render() {
