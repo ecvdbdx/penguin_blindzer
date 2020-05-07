@@ -24,7 +24,8 @@ class App extends Component {
     this.getInputValue = this.getInputValue.bind( this )
     this.renderContent = this.renderContent.bind( this )
     this.cleanString = this.cleanString.bind( this )
-    this.history = this.history.bind( this )
+    this.answerNotFound = this.answerNotFound.bind( this )
+    this.renderHistory = this.renderHistory.bind( this )
   }
 
   componentDidMount() {
@@ -39,7 +40,7 @@ class App extends Component {
   }
 
   randSong() {
-    this.history()
+    this.answerNotFound()
     const playlist = this.state.data
     const song = playlist[Math.floor( Math.random() * playlist.length )]
     this.setState( {
@@ -68,7 +69,7 @@ class App extends Component {
     } )
   }
 
-  history() {
+  answerNotFound() {
     if(this.state.answer === ''){
       this.state.history.push({"title":this.state.song.title, "success":false})
     }
@@ -84,6 +85,18 @@ class App extends Component {
     this.setState( { time: currentTime } )
   }
 
+  renderHistory() {
+    const {history} = this.state
+    return history.length > 0 && (
+        history.map((i, index) =>
+          <p style={!i.success ? {color:"red"} : {color:"green"}} key={index}>
+            {i.title}
+          </p>
+        )
+    )
+
+  }
+
   renderContent( song ) {
     return song ?
       <>
@@ -97,16 +110,14 @@ class App extends Component {
   }
 
   render() {
-    const { song, history } = this.state
+    const { song } = this.state
     const content = this.renderContent( song )
     const score = this.state.score
     return (
       <>
         {score}
         {content}
-        {history.length > 0 && (
-          history.map(i => <p style={!i.success ? {color:"red"} : {color:"green"}}key={i.title}>{i.title}</p>)
-        )}
+        {this.renderHistory()}
       </>
     )
   }
