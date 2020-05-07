@@ -24,6 +24,7 @@ class App extends Component {
     this.getInputValue = this.getInputValue.bind( this )
     this.renderContent = this.renderContent.bind( this )
     this.cleanString = this.cleanString.bind( this )
+    this.history = this.history.bind( this )
   }
 
   componentDidMount() {
@@ -38,6 +39,7 @@ class App extends Component {
   }
 
   randSong() {
+    this.history()
     const playlist = this.state.data
     const song = playlist[Math.floor( Math.random() * playlist.length )]
     this.setState( {
@@ -57,9 +59,8 @@ class App extends Component {
       const answer = this.cleanString( this.state.answer )
       const match = stringSimilarity.compareTwoStrings( songTitle, answer )
       if ( match >= .7 && songTitle.length === answer.length ) {
-        this.state.history.push( songTitle )
+        this.state.history.push( {"title":songTitle, "success":true })
         this.reward()
-        console.log( this.state.history )
         if ( this.state.data === [] )
           this.setState( { endGame: false } )
         else this.randSong()
@@ -67,10 +68,15 @@ class App extends Component {
     } )
   }
 
+  history() {
+    if(this.state.answer === ''){
+      this.state.history.push({"title":this.state.song.title, "success":false})
+    }
+  }
+
   reward() {
     const score = 25 + (30 - this.state.time)
     this.setState( { score: this.state.score + score } )
-    console.log( this.state.score )
   }
 
   getCurrentTime( e ) {
@@ -91,11 +97,16 @@ class App extends Component {
   }
 
   render() {
-    const { song } = this.state
+    const { song, history } = this.state
     const content = this.renderContent( song )
+    const score = this.state.score
     return (
       <>
+        {score}
         {content}
+        {history.length > 0 && (
+          history.map(i => <p style={!i.success ? {color:"red"} : {color:"green"}}key={i.title}>{i.title}</p>)
+        )}
       </>
     )
   }
