@@ -1,6 +1,7 @@
 import './App.css'
 import React, { Component } from 'react'
 import stringSimilarity from 'string-similarity'
+import History from "./component/history";
 
 class App extends Component {
 
@@ -25,7 +26,6 @@ class App extends Component {
     this.renderContent = this.renderContent.bind( this )
     this.cleanString = this.cleanString.bind( this )
     this.answerNotFound = this.answerNotFound.bind( this )
-    this.renderHistory = this.renderHistory.bind( this )
   }
 
   componentDidMount() {
@@ -85,17 +85,7 @@ class App extends Component {
     this.setState( { time: currentTime } )
   }
 
-  renderHistory() {
-    const {history} = this.state
-    return history.length > 0 && (
-        history.map((i, index) =>
-          <p style={!i.success ? {color:"red"} : {color:"green"}} key={index}>
-            {i.title}
-          </p>
-        )
-    )
 
-  }
 
   renderContent( song ) {
     return song ?
@@ -117,7 +107,7 @@ class App extends Component {
       <>
         {score}
         {content}
-        {this.renderHistory()}
+        <History history={this.state.history}/>
       </>
     )
   }
