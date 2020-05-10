@@ -1,13 +1,25 @@
-import React, {Component} from 'react';
+import React from 'react';
+import HistoryCard from "./historyCard";
 
 const History = ({history}) =>{
-        return history.length > 0 && (
-            history.map((i, index) =>
-                <p style={!i.success ? {color:"red"} : {color:"green"}} key={index}>
-                    {i.title}
-                </p>
+    console.log(history)
+    return (
+        <div className="history-wrapper">
+            {history.length > 0 && (
+                history.map((i, index) => (
+
+                    <HistoryCard
+                        key = {index}
+                        title = {i.title}
+                        artist = {i.artist}
+                        success = {i.success}
+                    />
+                ))
             )
-        )
-    }
+            }
+        </div>
+
+    )
+}
 
 export default History;

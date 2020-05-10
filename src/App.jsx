@@ -40,7 +40,7 @@ class App extends Component {
   }
 
   randSong() {
-    this.answerNotFound()
+    if(this.state.song.artist) this.answerNotFound()
     const playlist = this.state.data
     const song = playlist[Math.floor( Math.random() * playlist.length )]
     this.setState( {
@@ -55,12 +55,19 @@ class App extends Component {
   }
 
   getInputValue( e ) {
+    const { song } = this.state
+    const artistName = song ? song.artist.name : null
+
     this.setState( { answer: e.target.value }, () => {
-      const songTitle = this.cleanString( this.state.song.title )
+      const songTitle = this.cleanString( song.title )
       const answer = this.cleanString( this.state.answer )
       const match = stringSimilarity.compareTwoStrings( songTitle, answer )
       if ( match >= .7 && songTitle.length === answer.length ) {
-        this.state.history.push( {"title":songTitle, "success":true })
+        this.state.history.push({
+          "title": song.title,
+          "artist": artistName,
+          "success": true
+        })
         this.reward()
         if ( this.state.data === [] )
           this.setState( { endGame: false } )
@@ -70,8 +77,14 @@ class App extends Component {
   }
 
   answerNotFound() {
+    const { song } = this.state
+    const artistName = song ? song.artist.name : null
     if(this.state.answer === ''){
-      this.state.history.push({"title":this.state.song.title, "success":false})
+      this.state.history.push({
+        "title": song.title,
+        "artist": artistName,
+        "success": false
+      })
     }
   }
 
