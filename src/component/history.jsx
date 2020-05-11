@@ -2,11 +2,11 @@ import React from 'react';
 import HistoryCard from "./historyCard";
 
 const History = ({history}) =>{
-    console.log(history)
+    const newHistory = history.slice(-4)
     return (
         <div className="history-wrapper">
-            {history.length > 0 && (
-                history.map((i, index) => (
+            {newHistory.length > 0 && (
+                newHistory.map((i, index) => (
 
                     <HistoryCard
                         key = {index}
