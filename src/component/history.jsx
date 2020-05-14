@@ -7,16 +7,16 @@ const History = ({history}) =>{
     return (
         <div className="history-wrapper">
             {newHistory.length > 0 && (
-                newHistory.map((i, index) => (
+                newHistory.map((i) => (
                     <Transition
-                    items={i} key={index}
+                    items={i} key={i.title}
                     from={{ transform: 'translate3d(-250px,0,0)' }}
                     enter={{ transform: 'translate3d(0px,0,0)' }}
                     leave={{ transform: 'translate3d(-250px,0,0)' }}>
                         {i => props =>
-                        <div key= {index} style= {props}>
+                        <div key= {i.item} style= {props}>
                             <HistoryCard
-                                key = {index}
+                                key = {i.title}
                                 title = {i.title}
                                 artist = {i.artist}
                                 success = {i.success}
