@@ -1,10 +1,10 @@
 .history-card-container{
     margin: 20px;
-    padding: 15px 30px;
+    padding: 5px 12px;
     border-radius: 10px;
-    box-shadow: 0 8px 17px -8px #A3A5AE;
+    box-shadow: 0 5px 17px -8px #A3A5AE;
     background-color: #FFF;
-    width: 230px;
+    width: 205px;
 }
 
 .history-card-container.green {
@@ -16,12 +16,14 @@
 }
 
 .history-card-title {
-    font-size: 18px;
+    font-size: 12px;
     font-weight: bold;
+    width: 100%;
 }
 
 .history-card-artist {
-    font-size: 14px;
+    font-size: 11px;
     font-weight: lighter;
     color: #636A73;
+    width: 100%;
 }

@@ -2,6 +2,7 @@ import './App.css'
 import React, { Component } from 'react'
 import stringSimilarity from 'string-similarity'
 import History from "./component/history";
+import AudioInput from './component/audioInput';
 
 class App extends Component {
 
@@ -23,7 +24,6 @@ class App extends Component {
     this.getCurrentTime = this.getCurrentTime.bind( this )
     this.randSong = this.randSong.bind( this )
     this.getInputValue = this.getInputValue.bind( this )
-    this.renderContent = this.renderContent.bind( this )
     this.cleanString = this.cleanString.bind( this )
     this.answerNotFound = this.answerNotFound.bind( this )
   }
@@ -98,29 +98,23 @@ class App extends Component {
     this.setState( { time: currentTime } )
   }
 
-
-
-  renderContent( song ) {
-    return song ?
-      <>
-        <h1>{song.title}</h1>
-        <audio onEnded={this.randSong} onTimeUpdate={this.getCurrentTime} src={song.preview} controls autoPlay />
-        <section>
-          <input type="text" value={this.state.answer} autoFocus onChange={( e ) => this.getInputValue( e )} />
-        </section>
-      </>
-      : <h1>End Game</h1>
-  }
-
   render() {
-    const { song } = this.state
-    const content = this.renderContent( song )
+    const { song, history, answer } = this.state
     const score = this.state.score
+
     return (
       <>
         {score}
-        {content}
-        <History history={this.state.history}/>
+        <div className="main-container">
+          <History history={ history }/>
+          <AudioInput
+            song = { song }
+            onEnded = { this.randSong }
+            onTimeUpdate = { this.getCurrentTime }
+            value = { answer }
+            onChange = { (e) => this.getInputValue(e) }
+          />
+        </div>
       </>
     )
   }
