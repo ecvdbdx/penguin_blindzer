@@ -26,6 +26,7 @@ class App extends Component {
     this.getInputValue = this.getInputValue.bind( this )
     this.cleanString = this.cleanString.bind( this )
     this.answerNotFound = this.answerNotFound.bind( this )
+    this.updateHistory = this.updateHistory.bind( this )
   }
 
   componentDidMount() {
@@ -40,7 +41,6 @@ class App extends Component {
   }
 
   randSong() {
-    if(this.state.song.artist) this.answerNotFound()
     const playlist = this.state.data
     const song = playlist[Math.floor( Math.random() * playlist.length )]
     this.setState( {
@@ -54,20 +54,23 @@ class App extends Component {
     return string.toLowerCase().replace( /(\((.*?)\))/, '' ).trim().normalize( "NFD" ).replace( /[\u0300-\u036f]/g, "" )
   }
 
+  updateHistory(song, success) {
+    this.state.history.push({
+      "title": song.title,
+      "artist": song.artist.name,
+      "success": success
+    })
+  }
+
   getInputValue( e ) {
     const { song } = this.state
-    const artistName = song ? song.artist.name : null
 
     this.setState( { answer: e.target.value }, () => {
       const songTitle = this.cleanString( song.title )
       const answer = this.cleanString( this.state.answer )
       const match = stringSimilarity.compareTwoStrings( songTitle, answer )
       if ( match >= .7 && songTitle.length === answer.length ) {
-        this.state.history.push({
-          "title": song.title,
-          "artist": artistName,
-          "success": true
-        })
+        this.updateHistory(song, true)
         this.reward()
         if ( this.state.data === [] )
           this.setState( { endGame: false } )
@@ -78,14 +81,8 @@ class App extends Component {
 
   answerNotFound() {
     const { song } = this.state
-    const artistName = song ? song.artist.name : null
-    if(this.state.answer === ''){
-      this.state.history.push({
-        "title": song.title,
-        "artist": artistName,
-        "success": false
-      })
-    }
+    this.updateHistory(song, false)
+    this.randSong()
   }
 
   reward() {
@@ -109,7 +106,7 @@ class App extends Component {
           <History history={ history }/>
           <AudioInput
             song = { song }
-            onEnded = { this.randSong }
+            onEnded = { this.answerNotFound }
             onTimeUpdate = { this.getCurrentTime }
             value = { answer }
             onChange = { (e) => this.getInputValue(e) }
