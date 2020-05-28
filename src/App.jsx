@@ -36,7 +36,7 @@ class App extends Component {
         const result = response.tracks.data
         this.setState( {
           data: result.filter( el => el.readable )
-        }, this.randSong )
+        },this.randSong )
       } )
   }
 
@@ -55,11 +55,13 @@ class App extends Component {
   }
 
   updateHistory(song, success) {
-    this.state.history.push({
+    const { history } = this.state
+    const newHistory = [...history, {
       "title": song.title,
       "artist": song.artist.name,
       "success": success
-    })
+    }]
+    this.setState({ history: newHistory })
   }
 
   getInputValue( e ) {
@@ -109,7 +111,7 @@ class App extends Component {
             onEnded = { this.answerNotFound }
             onTimeUpdate = { this.getCurrentTime }
             value = { answer }
-            onChange = { (e) => this.getInputValue(e) }
+            onChange = { this.getInputValue }
           />
         </div>
       </>
