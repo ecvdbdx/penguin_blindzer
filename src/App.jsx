@@ -1,6 +1,8 @@
 import './App.css'
 import React, { Component } from 'react'
 import stringSimilarity from 'string-similarity'
+import History from "./component/history";
+import AudioInput from './component/audioInput';
 
 class App extends Component {
 
@@ -22,8 +24,9 @@ class App extends Component {
     this.getCurrentTime = this.getCurrentTime.bind( this )
     this.randSong = this.randSong.bind( this )
     this.getInputValue = this.getInputValue.bind( this )
-    this.renderContent = this.renderContent.bind( this )
     this.cleanString = this.cleanString.bind( this )
+    this.answerNotFound = this.answerNotFound.bind( this )
+    this.updateHistory = this.updateHistory.bind( this )
   }
 
   componentDidMount() {
@@ -33,7 +36,7 @@ class App extends Component {
         const result = response.tracks.data
         this.setState( {
           data: result.filter( el => el.readable )
-        }, this.randSong )
+        },this.randSong )
       } )
   }
 
@@ -51,15 +54,26 @@ class App extends Component {
     return string.toLowerCase().replace( /(\((.*?)\))/, '' ).trim().normalize( "NFD" ).replace( /[\u0300-\u036f]/g, "" )
   }
 
+  updateHistory(song, success) {
+    const { history } = this.state
+    const newHistory = [...history, {
+      "title": song.title,
+      "artist": song.artist.name,
+      "success": success
+    }]
+    this.setState({ history: newHistory })
+  }
+
   getInputValue( e ) {
+    const { song } = this.state
+
     this.setState( { answer: e.target.value }, () => {
-      const songTitle = this.cleanString( this.state.song.title )
+      const songTitle = this.cleanString( song.title )
       const answer = this.cleanString( this.state.answer )
       const match = stringSimilarity.compareTwoStrings( songTitle, answer )
       if ( match >= .7 && songTitle.length === answer.length ) {
-        this.state.history.push( songTitle )
+        this.updateHistory(song, true)
         this.reward()
-        console.log( this.state.history )
         if ( this.state.data === [] )
           this.setState( { endGame: false } )
         else this.randSong()
@@ -67,10 +81,15 @@ class App extends Component {
     } )
   }
 
+  answerNotFound() {
+    const { song } = this.state
+    this.updateHistory(song, false)
+    this.randSong()
+  }
+
   reward() {
     const score = 25 + (30 - this.state.time)
     this.setState( { score: this.state.score + score } )
-    console.log( this.state.score )
   }
 
   getCurrentTime( e ) {
@@ -78,24 +97,23 @@ class App extends Component {
     this.setState( { time: currentTime } )
   }
 
-  renderContent( song ) {
-    return song ?
-      <>
-        <h1>{song.title}</h1>
-        <audio onEnded={this.randSong} onTimeUpdate={this.getCurrentTime} src={song.preview} controls autoPlay />
-        <section>
-          <input type="text" value={this.state.answer} autoFocus onChange={( e ) => this.getInputValue( e )} />
-        </section>
-      </>
-      : <h1>End Game</h1>
-  }
-
   render() {
-    const { song } = this.state
-    const content = this.renderContent( song )
+    const { song, history, answer } = this.state
+    const score = this.state.score
+
     return (
       <>
-        {content}
+        {score}
+        <div className="main-container">
+          <History history={ history }/>
+          <AudioInput
+            song = { song }
+            onEnded = { this.answerNotFound }
+            onTimeUpdate = { this.getCurrentTime }
+            value = { answer }
+            onChange = { this.getInputValue }
+          />
+        </div>
       </>
     )
   }
